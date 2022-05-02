@@ -15,7 +15,7 @@ namespace CopTetris
             this.Size = new System.Drawing.Size(500, 642);
 
             timer.Interval = speed;
-            //map[10,5] = 1;
+            map[10, 5] = 1;
         }
 
 
@@ -26,36 +26,59 @@ namespace CopTetris
             Merge();
         }
 
+
+        private bool CanMoveDown()
+        {
+            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            {
+                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+                {
+                    //Check move down
+                    if (shape.Y + shape.MatrixSize < 20 
+                        && map[i + 1, j] != 0 
+                        && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+        private bool CanMoveToTheSides()
+        {
+            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            {
+                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+                {
+                    if (shape.X + shape.MatrixSize< 10 &&map[i, j + 1] != 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                        return false;
+                    if (shape.X > 0 && map[i, j - 1] != 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+
+
         private void OnPaint(object sender, PaintEventArgs e)
         {
             GenerateGrid(e.Graphics);
             DrawMap(e.Graphics);
         }
 
-        private void DrawMap(Graphics g)
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    if (map[i, j] == 1)
-                        g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                }
-            }
-        }
         private void ResetMap()
         {
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    if (i >= 0 && j >= 0 && i < 20 && j < 10)
-                    {
+                        if (shape.Matrix[i- shape.Y, j- shape.X] == 1)
+                        {
                             map[i, j] = 0;
-                    }
+                        }
                 }
             }
         }
+
         private void Merge()
         {
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
@@ -64,8 +87,8 @@ namespace CopTetris
                 {
                     if (i >= 0 && j >= 0 && i < 20 && j < 10)
                     {
-                       
-                            map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
+                        if(shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                        map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
 
                     }
                 }
@@ -75,7 +98,8 @@ namespace CopTetris
         private void timer_Tick(object sender, EventArgs e)
         {
             ResetMap();
-            shape.MoveDown();
+            if (CanMoveDown())
+                shape.MoveDown();
             Merge();
             this.Invalidate();
         }
@@ -86,19 +110,28 @@ namespace CopTetris
             {
                 case Keys.Right:
                     ResetMap();
-                    shape.MoveRight();
+                    if (CanMoveToTheSides())
+                        shape.MoveRight();
                     Merge();
                     this.Invalidate();
                     break;
                 case Keys.Left:
                     ResetMap();
-                    shape.MoveLeft();
+                    if (CanMoveToTheSides())
+                        shape.MoveLeft();
                     Merge();
                     this.Invalidate();
                     break;
                 case Keys.Down:
                     ResetMap();
-                    shape.MoveDown();
+                    if (CanMoveDown())
+                        shape.MoveDown();
+                    Merge();
+                    this.Invalidate();
+                    break;
+                case Keys.Space:
+                    ResetMap();
+                    shape.Y = 20 - shape.MatrixSize;
                     Merge();
                     this.Invalidate();
                     break;
@@ -135,6 +168,19 @@ namespace CopTetris
 
             }
         }
+
+        private void DrawMap(Graphics g)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (map[i, j] == 1)
+                        g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                }
+            }
+        }
+
 
     }
 }
