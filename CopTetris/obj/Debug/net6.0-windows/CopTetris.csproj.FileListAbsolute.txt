@@ -1,0 +1,17 @@
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\bin\Debug\net6.0-windows\CopTetris.exe
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\bin\Debug\net6.0-windows\CopTetris.deps.json
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\bin\Debug\net6.0-windows\CopTetris.runtimeconfig.json
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\bin\Debug\net6.0-windows\CopTetris.dll
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\bin\Debug\net6.0-windows\CopTetris.pdb
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.csproj.AssemblyReference.cache
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.Form1.resources
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.csproj.GenerateResource.cache
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.GeneratedMSBuildEditorConfig.editorconfig
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.AssemblyInfoInputs.cache
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.AssemblyInfo.cs
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.csproj.CoreCompileInputs.cache
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.dll
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\refint\CopTetris.dll
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.pdb
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\CopTetris.genruntimeconfig.cache
+E:\Cragravorum\VS Cragirner\CopTetris\CopTetris\obj\Debug\net6.0-windows\ref\CopTetris.dll
