@@ -7,6 +7,7 @@ namespace CopTetris
         int heigh = 300;
         int sizeOfSides = 30;
         int[,] map = new int[20, 10];
+        bool isStoped = false;
 
         Shape shape = new Shape(4, 0);
         public Form1()
@@ -15,7 +16,7 @@ namespace CopTetris
             this.Size = new System.Drawing.Size(500, 642);
 
             timer.Interval = speed;
-            map[10, 5] = 1;
+            
         }
 
 
@@ -29,28 +30,40 @@ namespace CopTetris
 
         private bool CanMoveDown()
         {
+            if (isStoped)
+                return false;
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
                     //Check move down
-                    if (shape.Y + shape.MatrixSize < 20 
-                        && map[i + 1, j] != 0 
-                        && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                    if (shape.Y + shape.MatrixSize < 20
+                        && shape.Matrix[i - shape.Y, j - shape.X] != 0
+                        && map[i + 1, j] != 0)
+                    {
+                        isStoped = true;
                         return false;
+                    }
                 }
+            }
+            if (shape.Y + shape.MatrixSize == 20)
+            {
+                isStoped=true;
+                return false;
             }
             return true;
         }
         private bool CanMoveToTheSides()
         {
+            if (isStoped)
+                return false;
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    if (shape.X + shape.MatrixSize< 10 &&map[i, j + 1] != 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                    if (shape.X + shape.MatrixSize < 10 && shape.Matrix[i - shape.Y, j - shape.X] != 0 && map[i, j + 1] != 0)
                         return false;
-                    if (shape.X > 0 && map[i, j - 1] != 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                    if (shape.X > 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0 && map[i, j - 1] != 0)
                         return false;
                 }
             }
@@ -71,10 +84,10 @@ namespace CopTetris
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                        if (shape.Matrix[i- shape.Y, j- shape.X] == 1)
-                        {
-                            map[i, j] = 0;
-                        }
+                    if (shape.Matrix[i - shape.Y, j - shape.X] == 1)
+                    {
+                        map[i, j] = 0;
+                    }
                 }
             }
         }
@@ -87,8 +100,8 @@ namespace CopTetris
                 {
                     if (i >= 0 && j >= 0 && i < 20 && j < 10)
                     {
-                        if(shape.Matrix[i - shape.Y, j - shape.X] != 0)
-                        map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
+                        if (shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                            map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
 
                     }
                 }
