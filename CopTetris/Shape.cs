@@ -40,54 +40,66 @@ namespace CopTetris
                     Matrix = new int[3, 3]
                     {
                         {0,0,0 },
-                        {1,1,1 },
-                        {0,1,0},
+                        {2,2,2 },
+                        {0,2,0},
                     };
                     break;
                 case 3:
                     Matrix = new int[4, 4]
                     {
-                        {0,0,1,0 },
-                        {0,0,1,0 },
-                        {0,0,1,0},
-                        {0,0,1,0 }
+                        {0,0,3,0 },
+                        {0,0,3,0 },
+                        {0,0,3,0},
+                        {0,0,3,0 }
                     };
                     break;
                 case 4:
                     Matrix = new int[2, 2]
                     {
-                        {1,1,},
-                        {1,1,},
+                        {4,4,},
+                        {4,4,},
                         
                     };
                     break;
                 case 5:
                     Matrix = new int[3, 3]
                     {
-                        {0,1,0 },
-                        {0,1,1 },
-                        {0,0,1},
+                        {0,5,0 },
+                        {0,5,5 },
+                        {0,0,5},
                     };
                     break;
             }
         }
         public void Rotate()
         {
-            int[,] newMatrix = new int[MatrixSize, MatrixSize];
+            int[,] tempMatrix = new int[MatrixSize, MatrixSize];
             for (int i = 0; i < MatrixSize; i++)
             {
                 int k = 0;
                 for (int j = MatrixSize - 1; j >= 0; j--)
                 {
-                    newMatrix[i, k] = Matrix[j, i];
+                    tempMatrix[i, k] = Matrix[j, i];
                     k++;
                 }
             }
-            Matrix = newMatrix;
+            Matrix = tempMatrix;
+            int offset = (10 - (X + MatrixSize));
+            if (offset < 0)
+            {
+                for (int i = 0; i < Math.Abs(offset); i++)
+                    MoveLeft();
+            }
+
+            if (X < 0)
+            {
+                for (int i = 0; i < Math.Abs(X) + 1; i++)
+                    MoveRight();
+            }
         }
         public void MoveDown()
         {
-            if (Y < 20 - MatrixSize)
+            //if (Y < 20 - MatrixSize)
                 Y++;
         }
         public void MoveRight()

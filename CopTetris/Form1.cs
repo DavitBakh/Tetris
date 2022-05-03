@@ -77,7 +77,7 @@ namespace CopTetris
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
-                {                   
+                {
                     if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && (j - 1 < 0 || map[i, j - 1] != 0))
                         return false;
                 }
@@ -96,7 +96,7 @@ namespace CopTetris
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    if (shape.Matrix[i - shape.Y, j - shape.X] == 1)
+                    if (shape.Matrix[i - shape.Y, j - shape.X] != 0)
                     {
                         map[i, j] = 0;
                     }
@@ -133,9 +133,34 @@ namespace CopTetris
             if (CanMoveDown())
                 shape.MoveDown();
             Merge();
+            CheckLines();
             this.Invalidate();
         }
 
+
+        private void CheckLines()
+        {
+            bool b = true;
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < columnCount; j++)
+                {
+                    if(map[i, j] == 0)
+                    {
+                        b = false;
+
+                    }
+                }
+                if (b)
+                {
+                    for (int j = 0; j < columnCount; j++)
+                    {
+                        map[i, j] = 0;
+                        MessageBox.Show("lol");
+                    }
+                }
+            }
+        }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -204,31 +229,28 @@ namespace CopTetris
             for (int i = 0; i < rowCount; i++)
             {
                 for (int j = 0; j < columnCount; j++)
-                {
-                    if (map[i, j] != 0)
-                        g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //switch (map[i,j])
-                    //{
-                    //    case 1:
-                    //        g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //        break;
-                    //    case 2:
-                    //        g.FillRectangle(Brushes.Yellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //        break;
-                    //    case 3:
-                    //        g.FillRectangle(Brushes.Blue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //        break;
-                    //    case 4:
-                    //        g.FillRectangle(Brushes.DarkGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //        break;
-                    //    case 5:
-                    //        g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
-                    //        break;
-                    //}
-                }
+
+                    switch (map[i, j])
+                    {
+                        case 1:
+                            g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 2:
+                            g.FillRectangle(Brushes.Yellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 3:
+                            g.FillRectangle(Brushes.Blue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 4:
+                            g.FillRectangle(Brushes.DarkGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 5:
+                            g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                    }
             }
         }
-
-
     }
+
+
 }
