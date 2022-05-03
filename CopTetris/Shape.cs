@@ -13,14 +13,7 @@ namespace CopTetris
             X = x;
             Y = y;
             IsMove = true;
-
-            Matrix = new int[3, 3]
-            {
-                {1,0,0},
-                {1,0,0},
-                {1,1,0},
-
-            };
+            GenerateMatrix();
             MatrixSize = (int)Math.Sqrt(Matrix.Length);
         }
         public int X { get; set; }
@@ -30,7 +23,54 @@ namespace CopTetris
         public bool IsMove { get; set; }
         public int[,] Matrix { get; set; }
 
-
+        public void GenerateMatrix()
+        {
+            Random random = new Random();
+            switch (random.Next(1,6))
+            {
+                case 1:
+                    Matrix = new int[3, 3]
+                    {
+                        {1,0,0 },
+                        {1,0,0 },
+                        {1,1,0},
+                    };
+                    break;
+                case 2:
+                    Matrix = new int[3, 3]
+                    {
+                        {0,0,0 },
+                        {1,1,1 },
+                        {0,1,0},
+                    };
+                    break;
+                case 3:
+                    Matrix = new int[4, 4]
+                    {
+                        {0,0,1,0 },
+                        {0,0,1,0 },
+                        {0,0,1,0},
+                        {0,0,1,0 }
+                    };
+                    break;
+                case 4:
+                    Matrix = new int[2, 2]
+                    {
+                        {1,1,},
+                        {1,1,},
+                        
+                    };
+                    break;
+                case 5:
+                    Matrix = new int[3, 3]
+                    {
+                        {0,1,0 },
+                        {0,1,1 },
+                        {0,0,1},
+                    };
+                    break;
+            }
+        }
         public void MoveDown()
         {
             if (Y < 20 - MatrixSize)
@@ -38,12 +78,12 @@ namespace CopTetris
         }
         public void MoveRight()
         {
-            if (X <= 10 - MatrixSize)
+            //if (X <= 10 - MatrixSize)
                 X++;
         }
         public void MoveLeft()
         {
-            if (X > 0)
+            //if (X > 0)
                 X--;
         }
     }

@@ -2,21 +2,24 @@ namespace CopTetris
 {
     public partial class Form1 : Form
     {
-        int speed = 1000;
+        int speed = 800;
         int widht = 600;
         int heigh = 300;
         int sizeOfSides = 30;
         int[,] map = new int[20, 10];
         bool isStoped = false;
-
-        Shape shape = new Shape(4, 0);
+        int columnCount = 10;
+        int rowCount = 20;
+        Shape shape;
         public Form1()
         {
             InitializeComponent();
             this.Size = new System.Drawing.Size(500, 642);
 
+            shape = new Shape(4, 0);
+
             timer.Interval = speed;
-            
+
         }
 
 
@@ -37,7 +40,7 @@ namespace CopTetris
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
                     //Check move down
-                    if (shape.Y + shape.MatrixSize < 20
+                    if (shape.Y + shape.MatrixSize < rowCount
                         && shape.Matrix[i - shape.Y, j - shape.X] != 0
                         && map[i + 1, j] != 0)
                     {
@@ -46,14 +49,14 @@ namespace CopTetris
                     }
                 }
             }
-            if (shape.Y + shape.MatrixSize == 20)
+            if (shape.Y + shape.MatrixSize == rowCount)
             {
-                isStoped=true;
+                isStoped = true;
                 return false;
             }
             return true;
         }
-        private bool CanMoveToTheSides()
+        private bool CanMoveRight()
         {
             if (isStoped)
                 return false;
@@ -61,17 +64,26 @@ namespace CopTetris
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    if (shape.X + shape.MatrixSize < 10 && shape.Matrix[i - shape.Y, j - shape.X] != 0 && map[i, j + 1] != 0)
-                        return false;
-                    if (shape.X > 0 && shape.Matrix[i - shape.Y, j - shape.X] != 0 && map[i, j - 1] != 0)
+                    if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && (j >= columnCount - 1 || map[i, j + 1] != 0))
                         return false;
                 }
             }
             return true;
         }
-
-
-
+        public bool CanMoveLeft()
+        {
+            if (isStoped)
+                return false;
+            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            {
+                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+                {                   
+                    if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && (j - 1 < 0 || map[i, j - 1] != 0))
+                        return false;
+                }
+            }
+            return true;
+        }
         private void OnPaint(object sender, PaintEventArgs e)
         {
             GenerateGrid(e.Graphics);
@@ -98,7 +110,7 @@ namespace CopTetris
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    if (i >= 0 && j >= 0 && i < 20 && j < 10)
+                    if (i >= 0 && j >= 0 && i < rowCount && j < columnCount)
                     {
                         if (shape.Matrix[i - shape.Y, j - shape.X] != 0)
                             map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
@@ -110,6 +122,13 @@ namespace CopTetris
 
         private void timer_Tick(object sender, EventArgs e)
         {
+            if (isStoped)
+            {
+                GenerateNewShape();
+                Merge();
+                isStoped = false;
+            }
+
             ResetMap();
             if (CanMoveDown())
                 shape.MoveDown();
@@ -123,18 +142,20 @@ namespace CopTetris
             {
                 case Keys.Right:
                     ResetMap();
-                    if (CanMoveToTheSides())
+                    if (CanMoveRight())
                         shape.MoveRight();
                     Merge();
                     this.Invalidate();
                     break;
+
                 case Keys.Left:
                     ResetMap();
-                    if (CanMoveToTheSides())
+                    if (CanMoveLeft())
                         shape.MoveLeft();
                     Merge();
                     this.Invalidate();
                     break;
+
                 case Keys.Down:
                     ResetMap();
                     if (CanMoveDown())
@@ -142,40 +163,30 @@ namespace CopTetris
                     Merge();
                     this.Invalidate();
                     break;
+
                 case Keys.Space:
                     ResetMap();
-                    shape.Y = 20 - shape.MatrixSize;
+                    while (CanMoveDown())
+                    {
+                        shape.Y++;
+                    }
                     Merge();
                     this.Invalidate();
                     break;
             }
         }
 
+        private void GenerateNewShape()
+        {
+            shape = new Shape(4, 0);
+        }
         private void GenerateGrid(Graphics g)
         {
-            //for (int i = 0; i <= widht / sizeOfSides; i++)
-            //{
-            //    this.Controls.Add(new PictureBox()
-            //    {
-            //        BackColor = Color.Black,
-            //        Location = new System.Drawing.Point(0, i * sizeOfSides),
-            //        Size = new System.Drawing.Size(heigh, 1)
-            //    });
-            //}
-            //for (int i = 0; i <= heigh / sizeOfSides; i++)
-            //{
-            //    this.Controls.Add(new PictureBox()
-            //    {
-            //        BackColor = Color.Black,
-            //        Size = new System.Drawing.Size(1, widht),
-            //        Location = new System.Drawing.Point(i * sizeOfSides, 0),
-            //    });
-            //}
-            for (int i = 0; i <= 20; i++)
+            for (int i = 0; i <= rowCount; i++)
             {
                 g.DrawLine(Pens.Black, new Point(0, i * sizeOfSides), new Point(heigh, i * sizeOfSides));
             }
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i <= columnCount; i++)
             {
                 g.DrawLine(Pens.Black, new Point(i * sizeOfSides, 0), new Point(i * sizeOfSides, widht));
 
@@ -184,9 +195,9 @@ namespace CopTetris
 
         private void DrawMap(Graphics g)
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < rowCount; i++)
             {
-                for (int j = 0; j < 10; j++)
+                for (int j = 0; j < columnCount; j++)
                 {
                     if (map[i, j] == 1)
                         g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
