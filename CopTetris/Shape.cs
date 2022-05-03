@@ -71,6 +71,20 @@ namespace CopTetris
                     break;
             }
         }
+        public void Rotate()
+        {
+            int[,] newMatrix = new int[MatrixSize, MatrixSize];
+            for (int i = 0; i < MatrixSize; i++)
+            {
+                int k = 0;
+                for (int j = MatrixSize - 1; j >= 0; j--)
+                {
+                    newMatrix[i, k] = Matrix[j, i];
+                    k++;
+                }
+            }
+            Matrix = newMatrix;
+        }
         public void MoveDown()
         {
             if (Y < 20 - MatrixSize)
@@ -78,12 +92,12 @@ namespace CopTetris
         }
         public void MoveRight()
         {
-            //if (X <= 10 - MatrixSize)
+           
                 X++;
         }
         public void MoveLeft()
         {
-            //if (X > 0)
+           
                 X--;
         }
     }

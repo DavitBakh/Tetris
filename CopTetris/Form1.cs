@@ -173,6 +173,12 @@ namespace CopTetris
                     Merge();
                     this.Invalidate();
                     break;
+                case Keys.Up:
+                    ResetMap();
+                    shape.Rotate();
+                    Merge();
+                    this.Invalidate();
+                    break;
             }
         }
 
@@ -199,8 +205,26 @@ namespace CopTetris
             {
                 for (int j = 0; j < columnCount; j++)
                 {
-                    if (map[i, j] == 1)
+                    if (map[i, j] != 0)
                         g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //switch (map[i,j])
+                    //{
+                    //    case 1:
+                    //        g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //        break;
+                    //    case 2:
+                    //        g.FillRectangle(Brushes.Yellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //        break;
+                    //    case 3:
+                    //        g.FillRectangle(Brushes.Blue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //        break;
+                    //    case 4:
+                    //        g.FillRectangle(Brushes.DarkGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //        break;
+                    //    case 5:
+                    //        g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                    //        break;
+                    //}
                 }
             }
         }
