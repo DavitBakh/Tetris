@@ -2,7 +2,7 @@ namespace CopTetris
 {
     public partial class Form1 : Form
     {
-        int speed = 800;
+        int speed = 600;
         int widht = 600;
         int heigh = 300;
         int sizeOfSides = 30;
@@ -33,26 +33,50 @@ namespace CopTetris
 
         private bool CanMoveDown()
         {
+            #region
+            //if (isStoped)
+            //    return false;
+            //for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            //{
+            //    for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+            //    {
+            //        //Check move down
+            //        if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && i <= rowCount 
+            //            && shape.Matrix[i - shape.Y, j - shape.X] != 0
+            //            && (map[i + 1, j] != 0 || i >= rowCount))
+            //        {
+            //            isStoped = true;
+            //            return false;
+            //        }
+
+            //        //if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && )
+            //        //{
+            //        //    isStoped= false;
+            //        //    return false;
+            //        //}
+            //    }
+
+            //}
+            //if (shape.Y + shape.MatrixSize == rowCount)
+            //{
+            //    isStoped = true;
+            //    return false;
+            //}
+            //return true;
+            #endregion
+
             if (isStoped)
                 return false;
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
                 for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
                 {
-                    //Check move down
-                    if (shape.Y + shape.MatrixSize < rowCount
-                        && shape.Matrix[i - shape.Y, j - shape.X] != 0
-                        && map[i + 1, j] != 0)
+                    if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && (i >= rowCount - 1 || map[i + 1, j] != 0))
                     {
                         isStoped = true;
                         return false;
                     }
                 }
-            }
-            if (shape.Y + shape.MatrixSize == rowCount)
-            {
-                isStoped = true;
-                return false;
             }
             return true;
         }
@@ -145,7 +169,7 @@ namespace CopTetris
             {
                 for (int j = 0; j < columnCount; j++)
                 {
-                    if(map[i, j] == 0)
+                    if (map[i, j] == 0)
                     {
                         b = false;
 
