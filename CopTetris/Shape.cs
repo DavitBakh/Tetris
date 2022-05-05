@@ -26,7 +26,7 @@ namespace CopTetris
         public void GenerateMatrix()
         {
             Random random = new Random();
-            switch (random.Next(1,6))
+            switch (random.Next(3,4))
             {
                 case 1:
                     Matrix = new int[3, 3]
@@ -69,10 +69,27 @@ namespace CopTetris
                         {0,0,5},
                     };
                     break;
+                case 6:
+                    Matrix = new int[3, 3]
+                    {
+                        {0,0,6 },
+                        {0,0,6 },
+                        {0,6,6},
+                    };
+                    break;
+                case 7:
+                    Matrix = new int[3, 3]
+                    {
+                        {0,7,0 },
+                        {7,7,0 },
+                        {7,0,0},
+                    };
+                    break;
             }
         }
         public void Rotate()
         {
+           
             int[,] tempMatrix = new int[MatrixSize, MatrixSize];
             for (int i = 0; i < MatrixSize; i++)
             {
@@ -96,10 +113,13 @@ namespace CopTetris
                 for (int i = 0; i < Math.Abs(X) + 1; i++)
                     MoveRight();
             }
+            if(Y+MatrixSize > 20)
+            {
+                    Y--;
+            }
         }
         public void MoveDown()
         {
-            //if (Y < 20 - MatrixSize)
                 Y++;
         }
         public void MoveRight()

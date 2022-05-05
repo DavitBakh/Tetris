@@ -127,64 +127,6 @@ namespace CopTetris
                 }
             }
         }
-
-        private void Merge()
-        {
-            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
-            {
-                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
-                {
-                    if (i >= 0 && j >= 0 && i < rowCount && j < columnCount)
-                    {
-                        if (shape.Matrix[i - shape.Y, j - shape.X] != 0)
-                            map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
-
-                    }
-                }
-            }
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            if (isStoped)
-            {
-                GenerateNewShape();
-                Merge();
-                isStoped = false;
-            }
-
-            ResetMap();
-            if (CanMoveDown())
-                shape.MoveDown();
-            Merge();
-            CheckLines();
-            this.Invalidate();
-        }
-
-
-        private void CheckLines()
-        {
-            bool b = true;
-            for (int i = 0; i < rowCount; i++)
-            {
-                for (int j = 0; j < columnCount; j++)
-                {
-                    if (map[i, j] == 0)
-                    {
-                        b = false;
-
-                    }
-                }
-                if (b)
-                {
-                    for (int j = 0; j < columnCount; j++)
-                    {
-                        map[i, j] = 0;
-                        MessageBox.Show("lol");
-                    }
-                }
-            }
-        }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -222,12 +164,65 @@ namespace CopTetris
                     Merge();
                     this.Invalidate();
                     break;
-                case Keys.Up:
-                    ResetMap();
-                    shape.Rotate();
-                    Merge();
-                    this.Invalidate();
-                    break;
+            }
+        }
+
+        private void Merge()
+        {
+            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            {
+                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+                {
+                    if (i >= 0 && j >= 0 && i < rowCount && j < columnCount)
+                    {
+                        if (shape.Matrix[i - shape.Y, j - shape.X] != 0)
+                            map[i, j] = shape.Matrix[i - shape.Y, j - shape.X];
+
+                    }
+                }
+            }
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            CheckLines();
+            if (isStoped)
+            { 
+                isStoped = false;
+                GenerateNewShape();
+                Merge();
+               
+            }
+
+            ResetMap();
+            if (CanMoveDown())
+                shape.MoveDown();
+            Merge();
+            
+            this.Invalidate();
+        }
+
+
+        private void CheckLines()
+        {
+            for (int i = 0; i < rowCount; i++)
+            {
+               bool b = true;
+                for (int j = 0; j < columnCount; j++)
+                {
+                    if (map[i, j] == 0)
+                       b = false;
+                }
+                if (b)
+                {
+                    for (int j = i; j > 0; j--)
+                    {
+                        for (int k = 0; k < columnCount; k++)
+                        {
+                            map[j, k] = map[j-1,k];
+                        }
+                    }
+                }
             }
         }
 
@@ -260,20 +255,41 @@ namespace CopTetris
                             g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
                             break;
                         case 2:
-                            g.FillRectangle(Brushes.Yellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            g.FillRectangle(Brushes.HotPink, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
                             break;
                         case 3:
-                            g.FillRectangle(Brushes.Blue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            g.FillRectangle(Brushes.LightBlue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
                             break;
                         case 4:
-                            g.FillRectangle(Brushes.DarkGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            g.FillRectangle(Brushes.GreenYellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
                             break;
                         case 5:
+                            g.FillRectangle(Brushes.LightGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 6:
                             g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 7:
+                            g.FillRectangle(Brushes.OrangeRed, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
                             break;
                     }
             }
         }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    ResetMap();
+                    shape.Rotate();
+                    Merge();
+                    this.Invalidate();
+                    break;
+            }
+        }
+
+        
     }
 
 
