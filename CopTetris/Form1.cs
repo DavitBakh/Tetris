@@ -10,6 +10,8 @@ namespace CopTetris
         bool isStoped = false;
         int columnCount = 10;
         int rowCount = 20;
+        int lines = 0;
+        int score = 0;
         Shape shape;
         public Form1()
         {
@@ -33,37 +35,6 @@ namespace CopTetris
 
         private bool CanMoveDown()
         {
-            #region
-            //if (isStoped)
-            //    return false;
-            //for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
-            //{
-            //    for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
-            //    {
-            //        //Check move down
-            //        if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && i <= rowCount 
-            //            && shape.Matrix[i - shape.Y, j - shape.X] != 0
-            //            && (map[i + 1, j] != 0 || i >= rowCount))
-            //        {
-            //            isStoped = true;
-            //            return false;
-            //        }
-
-            //        //if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && )
-            //        //{
-            //        //    isStoped= false;
-            //        //    return false;
-            //        //}
-            //    }
-
-            //}
-            //if (shape.Y + shape.MatrixSize == rowCount)
-            //{
-            //    isStoped = true;
-            //    return false;
-            //}
-            //return true;
-            #endregion
 
             if (isStoped)
                 return false;
@@ -186,44 +157,67 @@ namespace CopTetris
         private void timer_Tick(object sender, EventArgs e)
         {
             CheckLines();
+
             if (isStoped)
-            { 
+            {
                 isStoped = false;
                 GenerateNewShape();
+
+                ResetMap();
                 Merge();
-               
+
+                Invalidate();
+
+                return;
             }
+
 
             ResetMap();
             if (CanMoveDown())
+            {
+               
                 shape.MoveDown();
+            }
+            else CheckEnd();
+
+
             Merge();
-            
+
             this.Invalidate();
         }
 
 
         private void CheckLines()
         {
+            if (!isStoped)
+                return;
+            int currentLines = 0;
             for (int i = 0; i < rowCount; i++)
             {
-               bool b = true;
+                bool b = true;
                 for (int j = 0; j < columnCount; j++)
                 {
                     if (map[i, j] == 0)
-                       b = false;
+                        b = false;
                 }
                 if (b)
                 {
+                    currentLines++;
+                    lines++;
                     for (int j = i; j > 0; j--)
                     {
                         for (int k = 0; k < columnCount; k++)
                         {
-                            map[j, k] = map[j-1,k];
+                            map[j, k] = map[j - 1, k];
                         }
                     }
                 }
             }
+            for (int i = 0; i < currentLines; i++)
+            {
+                score += 10 * (i + currentLines);
+            }
+
         }
 
         private void GenerateNewShape()
@@ -274,6 +268,8 @@ namespace CopTetris
                             break;
                     }
             }
+            lbScore.Text = $"Score: {score}";
+            lbLines.Text = $"Lines: {lines}";
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -281,15 +277,44 @@ namespace CopTetris
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    ResetMap();
-                    shape.Rotate();
-                    Merge();
-                    this.Invalidate();
+                    if (!IsIntersects())
+                    {
+                        ResetMap();
+                        shape.Rotate();
+                        Merge();
+                        this.Invalidate();
+                    }
+
                     break;
             }
         }
 
-        
+        private bool IsIntersects()
+        {
+            for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
+            {
+                for (int j = shape.X; j < shape.X + shape.MatrixSize; j++)
+                {
+                    if (j >= 0 && j <= 7)
+                    {
+                        if (i >= 20 || (map[i, j] != 0 && shape.Matrix[i - shape.Y, j - shape.X] == 0))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void CheckEnd()
+        {
+            if (isStoped && shape.Y == 0)
+            {
+                timer.Stop();
+                MessageBox.Show("You lose");
+            }
+                
+
+        }
     }
 
 
