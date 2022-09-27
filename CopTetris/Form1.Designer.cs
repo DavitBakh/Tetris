@@ -32,6 +32,7 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.lbScore = new System.Windows.Forms.Label();
             this.lbLines = new System.Windows.Forms.Label();
+            this.lblNextShape = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // timer
@@ -58,11 +59,21 @@
             this.lbLines.TabIndex = 1;
             this.lbLines.Text = "Lines:";
             // 
+            // lblNextShape
+            // 
+            this.lblNextShape.AutoSize = true;
+            this.lblNextShape.Location = new System.Drawing.Point(345, 90);
+            this.lblNextShape.Name = "lblNextShape";
+            this.lblNextShape.Size = new System.Drawing.Size(67, 15);
+            this.lblNextShape.TabIndex = 2;
+            this.lblNextShape.Text = "Next Shape";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 603);
+            this.Controls.Add(this.lblNextShape);
             this.Controls.Add(this.lbLines);
             this.Controls.Add(this.lbScore);
             this.DoubleBuffered = true;
@@ -83,5 +94,6 @@
         private System.Windows.Forms.Timer timer;
         private Label lbScore;
         private Label lbLines;
+        private Label lblNextShape;
     }
 }

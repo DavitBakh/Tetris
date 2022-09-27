@@ -13,12 +13,14 @@ namespace CopTetris
         int lines = 0;
         int score = 0;
         Shape shape;
+        Shape nextShape;
+        
         public Form1()
         {
             InitializeComponent();
             this.Size = new System.Drawing.Size(500, 642);
 
-            shape = new Shape(4, 0);
+            
 
             timer.Interval = speed;
 
@@ -28,15 +30,17 @@ namespace CopTetris
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            shape = new Shape(4, 0);
+            nextShape = new Shape(11,4);
             timer.Start();
             Merge();
         }
 
 
-        private bool CanMoveDown()
+        private bool CanMoveDown(Shape shape)
         {
 
-            if (isStoped)
+            if (shape.IsStoped)
                 return false;
             for (int i = shape.Y; i < shape.Y + shape.MatrixSize; i++)
             {
@@ -44,7 +48,7 @@ namespace CopTetris
                 {
                     if (shape.Matrix[i - shape.Y, j - shape.X] != 0 && (i >= rowCount - 1 || map[i + 1, j] != 0))
                     {
-                        isStoped = true;
+                        shape.IsStoped = true;
                         return false;
                     }
                 }
@@ -81,8 +85,13 @@ namespace CopTetris
         }
         private void OnPaint(object sender, PaintEventArgs e)
         {
+            DrawShapeGhost(e.Graphics);
             GenerateGrid(e.Graphics);
             DrawMap(e.Graphics);
+            DrawNextShape(e.Graphics);
+            
+
+            //e.Graphics.DrawRectangle(Pens.Black, new Rectangle(0, 0, sizeOfSides, sizeOfSides));
         }
 
         private void ResetMap()
@@ -120,7 +129,7 @@ namespace CopTetris
 
                 case Keys.Down:
                     ResetMap();
-                    if (CanMoveDown())
+                    if (CanMoveDown(shape))
                         shape.MoveDown();
                     Merge();
                     this.Invalidate();
@@ -128,9 +137,9 @@ namespace CopTetris
 
                 case Keys.Space:
                     ResetMap();
-                    while (CanMoveDown())
+                    while (CanMoveDown(shape))
                     {
-                        shape.Y++;
+                        shape.MoveDown();
                     }
                     Merge();
                     this.Invalidate();
@@ -156,11 +165,12 @@ namespace CopTetris
 
         private void timer_Tick(object sender, EventArgs e)
         {
+            CheckEnd();
             CheckLines();
 
-            if (isStoped)
+            if (shape.IsStoped)
             {
-                isStoped = false;
+                shape.IsStoped = false;
                 GenerateNewShape();
 
                 ResetMap();
@@ -173,7 +183,7 @@ namespace CopTetris
 
 
             ResetMap();
-            if (CanMoveDown())
+            if (CanMoveDown(shape))
             {
                
                 shape.MoveDown();
@@ -189,8 +199,8 @@ namespace CopTetris
 
         private void CheckLines()
         {
-            if (!isStoped)
-                return;
+            //if (!isStoped)
+            //    return;
             int currentLines = 0;
             for (int i = 0; i < rowCount; i++)
             {
@@ -222,7 +232,10 @@ namespace CopTetris
 
         private void GenerateNewShape()
         {
-            shape = new Shape(4, 0);
+            shape = nextShape;
+            shape.X = 4;
+            shape.Y = 0;
+            nextShape = new Shape(11, 4);
         }
         private void GenerateGrid(Graphics g)
         {
@@ -271,6 +284,111 @@ namespace CopTetris
             lbScore.Text = $"Score: {score}";
             lbLines.Text = $"Lines: {lines}";
         }
+        
+        private void DrawNextShape(Graphics g)
+        {
+            for (int i = nextShape.Y; i < nextShape.Y + nextShape.MatrixSize; i++)
+            {
+                for (int j = nextShape.X; j < nextShape.X + nextShape.MatrixSize; j++)
+                {
+                    if (nextShape.Matrix[i - nextShape.Y, j - nextShape.X] == 0)
+                        continue;
+                    switch (nextShape.Matrix[i - nextShape.Y, j - nextShape.X])
+                    {
+                        case 1:
+                            
+                                g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 2:
+                            g.FillRectangle(Brushes.HotPink, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 3:
+                            g.FillRectangle(Brushes.LightBlue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 4:
+                            g.FillRectangle(Brushes.GreenYellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 5:
+                            g.FillRectangle(Brushes.LightGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 6:
+                            g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 7:
+                            g.FillRectangle(Brushes.OrangeRed, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void DrawShapeGhost(Graphics g)
+        {
+            Shape shapeGhoast = new Shape(shape.X, shape.Y+2) { Matrix = shape.Matrix };
+            shapeGhoast.IsMove = shape.IsMove;         
+            
+            do 
+            {
+                shapeGhoast.MoveDown() ;
+            } while (CanMoveDown(shapeGhoast)) ;
+
+            for (int i = shapeGhoast.Y; i < shapeGhoast.Y + shapeGhoast.MatrixSize; i++)
+            {
+                for (int j = shapeGhoast.X; j < shapeGhoast.X + shapeGhoast.MatrixSize; j++)
+                {
+                    if (shapeGhoast.Matrix[i - shapeGhoast.Y, j - shapeGhoast.X] == 0 || i >= rowCount)
+                        continue;
+                    switch (shapeGhoast.Matrix[i - shapeGhoast.Y, j - shapeGhoast.X])
+                    {
+                        //case 1:
+
+                        //    g.DrawRectangle(Pens.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 2:
+                        //    g.DrawRectangle(Pens.HotPink, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 3:
+                        //    g.DrawRectangle(Pens.LightBlue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 4:
+                        //    g.DrawRectangle(Pens.GreenYellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 5:
+                        //    g.DrawRectangle(Pens.LightGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 6:
+                        //    g.DrawRectangle(Pens.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        //case 7:
+                        //    g.DrawRectangle(Pens.OrangeRed, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                        //    break;
+                        case 1:
+
+                            g.FillRectangle(Brushes.Red, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 2:
+                            g.FillRectangle(Brushes.HotPink, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 3:
+                            g.FillRectangle(Brushes.LightBlue, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 4:
+                            g.FillRectangle(Brushes.GreenYellow, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 5:
+                            g.FillRectangle(Brushes.LightGreen, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 6:
+                            g.FillRectangle(Brushes.Orange, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                        case 7:
+                            g.FillRectangle(Brushes.OrangeRed, new Rectangle(j * sizeOfSides, i * sizeOfSides, sizeOfSides, sizeOfSides));
+                            break;
+                    }
+                }
+            }
+
+        }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
@@ -310,7 +428,11 @@ namespace CopTetris
             if (isStoped && shape.Y == 0)
             {
                 timer.Stop();
-                MessageBox.Show("You lose");
+              DialogResult = MessageBox.Show("You lose");
+                if(DialogResult == DialogResult.OK)
+                {
+                    this.Close();
+                }
             }
                 
 

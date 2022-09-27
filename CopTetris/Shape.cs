@@ -14,13 +14,14 @@ namespace CopTetris
             Y = y;
             IsMove = true;
             GenerateMatrix();
-            MatrixSize = (int)Math.Sqrt(Matrix.Length);
+           
         }
         public int X { get; set; }
         public int Y { get; set; }
 
-        public int MatrixSize { get; }
+        public int MatrixSize { get { return (int)Math.Sqrt(Matrix.Length); } }
         public bool IsMove { get; set; }
+        public bool IsStoped { get; set; } = false;
         public int[,] Matrix { get; set; }
 
         public void GenerateMatrix()
